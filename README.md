@@ -4,15 +4,15 @@
 
 ### Backend Engineer · AI Backend · Data Systems
 
-I build backend systems by starting from a measurable problem, comparing alternatives, and validating the final design with tests and metrics.
+I build backend systems by starting from a measurable problem, comparing alternatives, and validating the final design with tests, failure cases, and metrics.
 
 ![Java](https://img.shields.io/badge/Java-17%2B-007396?style=flat-square&logo=openjdk&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-Backend-6DB33F?style=flat-square&logo=springboot&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=flat-square&logo=python&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-Async%20API-009688?style=flat-square&logo=fastapi&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Data%20Modeling-4169E1?style=flat-square&logo=postgresql&logoColor=white)
-![Redis](https://img.shields.io/badge/Redis-Cache%20%26%20Coordination-DC382D?style=flat-square&logo=redis&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Data%20Integrity-4169E1?style=flat-square&logo=postgresql&logoColor=white)
 ![Kafka](https://img.shields.io/badge/Kafka-Event%20Streaming-231F20?style=flat-square&logo=apachekafka&logoColor=white)
+![Redis](https://img.shields.io/badge/Redis-Cache%20%26%20Coordination-DC382D?style=flat-square&logo=redis&logoColor=white)
 
 </div>
 
@@ -22,7 +22,7 @@ I build backend systems by starting from a measurable problem, comparing alterna
 
 백엔드 개발자로서 **정확한 데이터 처리, 동시성 제어, 장애에 강한 API, 비동기 I/O, 데이터 정합성, 그리고 성능을 수치로 검증하는 과정**에 관심이 있습니다.
 
-저는 기술을 먼저 고르기보다 다음 순서로 문제를 해결하려고 합니다.
+기술을 먼저 고르기보다 다음 순서로 문제를 해결하려고 합니다.
 
 ```text
 Problem
@@ -37,12 +37,26 @@ Implementation
   ↓
 Failure / Load Test
   ↓
-Before & After
+Measurement
   ↓
 Trade-off and Decision
 ```
 
-데이터 분석과 금융·블록체인 연구에서 시작해 Java/Spring 기반 서비스 개발과 LLM/RAG 백엔드로 확장했습니다. 현재 포트폴리오는 각 프로젝트가 서로 다른 백엔드 문제를 담당하도록 구성하고 있습니다.
+데이터 분석과 금융·블록체인 연구에서 시작해 Java/Spring 기반 서비스 개발과 LLM/RAG 백엔드로 확장했습니다. 현재 포트폴리오는 프로젝트마다 다른 백엔드 문제를 담당하도록 구성했습니다.
+
+---
+
+## Portfolio Verification
+
+| Project | Verification | Core problem |
+|---|---|---|
+| Reliable LLM Chatbot Backend | ![CI](https://github.com/kangwoul2/Reliable-LLM-Chatbot-Backend/actions/workflows/ci.yml/badge.svg) | Async I/O, RAG grounding, queue/backpressure, streaming |
+| Loan Refinance Service | ![CI](https://github.com/kangwoul2/Pay_Off_Loan/actions/workflows/backend-ci.yml/badge.svg) | Financial correctness, transaction, optimistic locking, idempotency |
+| Commerce Event Pipeline | ![CI](https://github.com/kangwoul2/SQL_EXCEL_EDA/actions/workflows/service-ci.yml/badge.svg) | Kafka delivery, duplicate event, idempotent projection |
+| HR Data Pipeline | ![CI](https://github.com/kangwoul2/Python_Data_Analysis_HR_DATA/actions/workflows/ci.yml/badge.svg) | ETL reproducibility, data quality, transactional load |
+| Market Prediction Research | ![Research](https://github.com/kangwoul2/Graduation_Paper/actions/workflows/research-v2.yml/badge.svg) | Temporal leakage, baseline, walk-forward, reproducibility |
+
+README에서 주장하는 핵심 구현은 코드·테스트·GitHub Actions 또는 저장소 내 원본 결과로 다시 확인할 수 있게 구성했습니다. 실측하지 않은 성능 개선 수치는 성과처럼 기재하지 않습니다.
 
 ---
 
@@ -76,19 +90,20 @@ Routing
   Polling / SSE / WebSocket
 ```
 
-핵심 주제:
-- End-to-End Async I/O
-- HTTP Connection Pool
-- Semaphore 기반 concurrency control
-- Bounded Queue와 backpressure
-- Request ID 기반 background job
-- Polling / SSE / WebSocket 비교
-- Retry / Timeout / Idempotency
-- RAG retrieval / no-context guard
-- Prometheus 기반 요청/오류/지연 관측
-- throughput, p95/p99, queue wait를 기준으로 한 성능 검증
+핵심 구현:
 
-이 프로젝트는 포트폴리오의 메인 프로젝트이며 **AI 기능보다 AI 서비스를 안정적으로 운영하기 위한 백엔드 구조**를 중심으로 설명합니다.
+- End-to-End Async I/O
+- shared HTTP connection pool
+- Semaphore 기반 downstream concurrency control
+- bounded Queue와 backpressure
+- Request ID 기반 background job
+- Polling / SSE / WebSocket 전달 경로
+- retry / timeout / idempotency
+- BM25 retrieval / no-context guard
+- Prometheus HTTP latency / in-flight LLM / grounded outcome metric
+- Locust 기반 throughput, p95/p99, error rate 실험 구조
+
+이 프로젝트는 포트폴리오의 메인 프로젝트이며 **AI 모델 자체보다 AI 서비스를 안정적으로 운영하기 위한 백엔드 구조**를 중심으로 설명합니다.
 
 ---
 
@@ -98,21 +113,22 @@ Routing
 
 **Java / Spring Boot / PostgreSQL / Transaction / Concurrency / Financial Domain**
 
-대환대출 의사결정에서 금리 차이만 보지 않고 중도상환수수료, 인지세, 상환 방식, 대환 시점을 함께 계산하는 금융 서비스입니다.
+대환대출에서 금리 차이만 보지 않고 중도상환수수료, 대환 비용, 상환 방식을 함께 계산하는 금융 의사결정 서비스입니다. 기존 Next.js 자산을 보존하면서 Spring Boot backend를 추가해 서버 측 정합성 문제를 분리했습니다.
 
-V2에서는 기존 Next.js 시뮬레이터를 유지하면서 Spring Boot 백엔드를 추가해 다음 문제를 다룹니다.
+핵심 구현:
 
-- `BigDecimal` 기반 금융 계산 정밀도
-- JPA / PostgreSQL 데이터 모델링
+- Java `BigDecimal` 기반 금융 계산
+- Strategy 기반 상환 방식 분리
+- Spring Data JPA / PostgreSQL
 - Flyway migration
-- Transaction boundary
-- `@Version` optimistic locking
-- stale update에 대한 HTTP 409 응답
-- `Idempotency-Key` 기반 중복 요청 방어
-- Redis cache 적용 가능 구간과 cache invalidation
-- 금융 계산 unit test 및 동시성 실험 설계
+- transaction boundary
+- JPA `@Version` optimistic locking
+- stale update → HTTP 409
+- `Idempotency-Key` 기반 import 중복 방어
+- cacheable read / mutation 시 cache eviction
+- 계산 unit test 및 concurrency/cache experiment harness
 
-이 프로젝트에서는 **정확성, 정합성, 트랜잭션, 동시성**을 핵심 주제로 다룹니다.
+이 프로젝트에서는 **정확성 → 정합성 → 동시성 → 캐시** 순으로 설계 의사결정을 설명합니다.
 
 ---
 
@@ -122,33 +138,34 @@ V2에서는 기존 Next.js 시뮬레이터를 유지하면서 Spring Boot 백엔
 
 **Spring Boot / Kafka / PostgreSQL / Event-driven Architecture**
 
-기존 E-commerce 분석 데이터를 출발점으로 구매 이벤트를 실시간 집계하는 event-driven backend로 확장한 프로젝트입니다.
+기존 E-commerce 분석을 구매 이벤트가 생성되는 backend까지 확장했습니다.
 
 ```text
 Purchase API
-    ↓
-202 Accepted
-    ↓
+    ↓ 202 Accepted
 Kafka purchase-events
     ↓
-Consumer Group
+Consumer
     ↓
-Idempotent Projection
+processed_events dedup
     ↓
-PostgreSQL Aggregate
+transactional projection
+    ↓
+PostgreSQL regional aggregate
 ```
 
-핵심 주제:
-- Kafka partition / key 선택
-- consumer group
-- at-least-once delivery
-- duplicate event replay
-- idempotent consumer
-- PostgreSQL `ON CONFLICT`
-- projection consistency
-- synchronous aggregation과 event-driven 처리의 trade-off
+핵심 구현:
 
-이 프로젝트에서는 **메시징과 이벤트 처리의 이유를 실제 중복/재처리 문제와 연결**합니다.
+- event ID를 `Idempotency-Key`로 수신
+- Kafka publish / consumer
+- region 기반 message key
+- at-least-once duplicate 재전달 가정
+- PostgreSQL unique constraint 기반 idempotent consumer
+- dedup insert + projection update를 같은 transaction으로 처리
+- atomic aggregate update로 Lost Update 방어
+- duplicate replay experiment
+
+이 프로젝트에서는 Kafka 자체보다 **failure와 duplicate delivery를 정상 경로로 가정한 설계**를 중심으로 설명합니다.
 
 ---
 
@@ -158,18 +175,20 @@ PostgreSQL Aggregate
 
 **Python / ETL / Airflow / PostgreSQL / Data Quality / FastAPI**
 
-기존 IBM HR 분석을 재현 가능한 데이터 파이프라인으로 확장한 프로젝트입니다.
+기존 IBM HR 분석을 재현 가능한 데이터 파이프라인으로 확장했습니다. 저장소 내 원본 집계에서 Sales 부서 이직률은 약 20.63%, Human Resources는 19.05%, Research & Development는 13.84%로 확인됩니다.
 
-- raw CSV validation
-- duplicate / null / invalid value quality gate
-- employee dimension / attrition fact / aggregate 생성
-- PostgreSQL schema constraint
-- transaction 기반 reload
+핵심 구현:
+
+- required schema / duplicate / invalid value quality gate
+- employee dimension / attrition fact / department aggregate
+- PostgreSQL PK/FK/CHECK constraint
+- `to_sql(replace)` 대신 schema를 보존하는 transactional reload
 - Airflow DAG
-- analytics API
-- `EXPLAIN ANALYZE` 기반 index 실험
+- FastAPI analytics API
+- `EXPLAIN ANALYZE` index experiment
+- quality / transform unit test
 
-이 프로젝트에서는 **데이터 품질과 재현 가능한 ETL**을 중심으로 다룹니다.
+이 프로젝트에서는 **분석 결과보다 분석이 다시 만들어질 수 있는 데이터 계약과 적재 무결성**을 중심으로 다룹니다.
 
 ---
 
@@ -177,31 +196,36 @@ PostgreSQL Aggregate
 
 [Repository](https://github.com/kangwoul2/Graduation_Paper)
 
-**Time Series / Financial Data / LSTM / GRU / Transformer / Reproducibility**
+**Financial Time Series / Evaluation Design / Reproducible ML**
 
-Bitcoin 및 금융시장 데이터를 대상으로 기술적 지표와 시계열 모델을 비교한 학부 연구입니다.
-
-기존 실험 결과만 강조하지 않고, 낮은 baseline 성능의 원인을 분석하고 다음 재실험 구조를 명시적으로 추가하고 있습니다.
+학사 연구의 LSTM / GRU / Transformer 실험을 보존하고, 원본 평가 과정에서 발견한 temporal evaluation 문제를 Research V2에서 다시 검증했습니다.
 
 ```text
-Original Baseline
-  ↓
-Label / Class Balance Audit
-  ↓
-Leakage-safe Split
-  ↓
-Class-weight / Threshold Tuning
-  ↓
-Feature Ablation
-  ↓
+Original Study
+    ↓
+Evaluation Audit
+    ↓
+Chronological Split
+    ↓
+Train-only Preprocessing
+    ↓
+Dummy Baseline
+    ↓
+Cross-market Ablation
+    ↓
 Walk-forward Validation
-  ↓
-Model Comparison
-  ↓
-Error Analysis
+    ↓
+Selective Prediction
 ```
 
-연구 프로젝트는 절대적인 정확도보다 **실험 설계, 재현성, 지표 선택, 모델별 trade-off를 설명할 수 있는 근거**로 사용합니다.
+GitHub Actions 검증 결과:
+
+- leakage-safe extended 3-class: **Accuracy 0.4000 / Macro F1 0.3844** (`BTC-only + ExtraTrees`)
+- majority dummy: Accuracy 0.2930 / Macro F1 0.1511
+- actionable direction: **Accuracy 0.5459 / Macro F1 0.5451** (`BTC + cross-market + RandomForest`)
+- high-confidence actionable-move slice: coverage 23.1%에서 **Accuracy 64.63% / Macro F1 64.20%**
+
+원래 GRU Accuracy 37.39%와 새 40.00%를 동일 조건의 개선율로 주장하지 않습니다. 평가 protocol이 다르기 때문입니다. 이 프로젝트의 핵심은 **좋은 숫자를 만드는 것이 아니라 더 엄격한 평가를 설계하고 실패한 가설도 남기는 것**입니다.
 
 ---
 
@@ -209,15 +233,18 @@ Error Analysis
 
 | Area | Stack / Concepts |
 |---|---|
-| Backend | Java, Spring Boot, Python, FastAPI, REST API |
-| Persistence | PostgreSQL, MySQL, JPA, SQLAlchemy, Supabase |
+| Java Backend | Java 17, Spring Boot, Spring Data JPA, REST API, Maven |
+| Python Backend | Python 3.11, FastAPI, asyncio, httpx |
+| Persistence | PostgreSQL, SQLAlchemy, JPA, Flyway, Supabase experience |
 | Concurrency | Async I/O, Semaphore, Queue, Race Condition, Optimistic Lock |
-| Reliability | Transaction, Idempotency, Retry, Timeout, Backpressure |
-| Event Systems | Kafka, Consumer Group, Offset, At-least-once, Idempotent Consumer |
-| Data | Pandas, ETL, Airflow, Data Quality, Index, EXPLAIN ANALYZE |
-| AI Backend | RAG, Retrieval, Embedding, LangChain, LangGraph, ChromaDB |
-| Infrastructure | Docker, GitHub Actions, Redis, Linux, AWS experience |
-| Measurement | Throughput, p50/p95/p99 Latency, Error Rate, Queue Wait, Cache Hit Ratio |
+| Reliability | Transaction, Idempotency, Retry, Timeout, Backpressure, DB Constraint |
+| Event Systems | Kafka, Partition Key, Consumer Group, At-least-once, Idempotent Consumer |
+| Data Engineering | Pandas, ETL, Airflow, Data Quality, Index, EXPLAIN ANALYZE |
+| AI / Research | RAG, Retrieval, Grounding, Time Series, Model Evaluation |
+| Infrastructure | Docker, Docker Compose, GitHub Actions, Linux, AWS internship experience |
+| Measurement | Throughput, p50/p95/p99, Error Rate, Queue Wait, Balanced Accuracy, Macro F1 |
+
+Redis, Kafka, Airflow 같은 기술은 모든 프로젝트에 반복해서 넣지 않고 **각 기술이 해결하는 문제가 실제로 존재하는 프로젝트에만 배치**했습니다.
 
 ---
 
@@ -275,19 +302,23 @@ Error Analysis
 
 ## Engineering Principles
 
-### 1. Technology follows the problem
+### Technology follows the problem
 
 Redis, Kafka, Queue, Lock을 먼저 넣지 않습니다. 문제가 단일 DB transaction으로 해결된다면 더 복잡한 분산 도구를 사용하지 않습니다.
 
-### 2. Correctness before scale
+### Correctness before scale
 
 금융 계산의 정밀도, 데이터 무결성, retry 시 중복 방지처럼 잘못된 결과를 만드는 문제를 처리량 개선보다 먼저 해결합니다.
 
-### 3. Tail latency matters
+### Tail latency matters
 
-평균 latency만으로 시스템을 평가하지 않습니다. 동시 요청이 증가할 때 p95/p99와 error rate, queue wait가 어떻게 변하는지 함께 봅니다.
+평균 latency만으로 시스템을 평가하지 않습니다. 동시 요청이 증가할 때 p95/p99, error rate, queue wait를 함께 봅니다.
 
-### 4. Every optimization needs a baseline
+### Evaluation design matters
+
+ML에서도 최고 accuracy 하나만 고르지 않습니다. temporal split, dummy baseline, Balanced Accuracy, Macro F1, coverage를 함께 봅니다.
+
+### Every optimization needs a baseline
 
 ```text
 Baseline
